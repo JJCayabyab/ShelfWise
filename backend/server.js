@@ -26,6 +26,7 @@ async function startServer() {
          title VARCHAR(255) NOT NULL,
          author VARCHAR(255) NOT NULL,
          year_published INT NOT NULL,
+         img TEXT,
          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )`;
