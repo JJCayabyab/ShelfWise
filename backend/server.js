@@ -5,7 +5,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import bookRoutes from "./routes/bookRoutes.js";
 import { sql } from "./config/db.js";
-
+import rateLimit from "express-rate-limit";
 dotenv.config(); // Load environment variables from .env file
 
 const app = express();
@@ -16,6 +16,19 @@ app.use(helmet()); // Security middleware
 app.use(morgan("dev")); // log the request
 app.use(cors()); // to allow cross-origin requests
 
+// basic rate limiter
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 150, 
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: "false",
+    message: "Too many requests, please try again later.",
+  },
+});
+
+app.use(limiter); // apply limiter to all routes
 app.use("/api/books", bookRoutes);
 
 async function startServer() {
