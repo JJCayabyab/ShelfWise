@@ -5,7 +5,10 @@ export const getAllBooks = async (req, res) => {
     const books = await sql`SELECT * FROM books
     ORDER BY created_at DESC`;
 
-    res.status(200).json(books);
+    res.status(200).json({
+      success: true,
+      data: books,
+    });
   } catch (error) {
     console.log("Error in fetching books:", error);
     res.status(500).json({ success: "false", message: "Server Error" });

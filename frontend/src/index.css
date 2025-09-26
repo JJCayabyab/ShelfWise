@@ -2,5 +2,5 @@
 @plugin "daisyui" 
 
 {
-  themes: winter --default, dark --prefersdark, cupcake, retro, dim, abyss;
+  themes: winter --default, dark --prefersdark, sunset;
 }
