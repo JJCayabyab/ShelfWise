@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
-import logo from "../../public/logo.svg";
+import winterLogo from "../../public/winterLogo.svg";
+import sunsetLogo from "../../public/sunsetLogo.svg";
 import { Link, useResolvedPath } from "react-router-dom";
 import { useThemeStore } from "../store/themeSelector";
 
@@ -16,15 +17,25 @@ const Navbar = () => {
   return (
     <>
       <div
-        className={`shadow-md w-screen py- flex px-5 items-center justify-between
+        className={`shadow-md w-screen py-3 flex px-5 items-center justify-between
      sm:px-7 md:px-14 lg:px-14 xl:px-36 ${
        theme === "winter" ? "bg-blue-50" : "bg-[#1a1a28]"
      }`}
       >
         <Link to={"/"}>
           <div className="flex gap-2 items-center">
-            <img src={logo} className="size-12" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-teal-500 to-indigo-600 bg-clip-text text-transparent">
+            <img
+              src={theme === "winter" ? winterLogo : sunsetLogo}
+              className="size-12"
+            />
+            <h1
+              className={`text-2xl font-bold bg-gradient-to-r ${
+                theme === "winter"
+                  ? "from-teal-500 to-indigo-600"
+                  : "from-orange-500 to-yellow-600"
+              } bg-clip-text text-transparent`}
+            >
+              {" "}
               ShelfWise
             </h1>
           </div>
@@ -79,17 +90,7 @@ const Navbar = () => {
               </g>
             </svg>
           </label>
-          {isHome && (
-            <button
-              className={`btn bg-blue-500 text-white ${
-                theme === "winter"
-                  ? "hover:border-blue-800"
-                  : "hover:border-blue-100"
-              }`}
-            >
-              Add Book
-            </button>
-          )}
+          {isHome && <button className="btn btn-primary">Add Book</button>}
         </div>
 
         {/* <label className="flex cursor-pointer gap-2" onClick={toggleTheme}>

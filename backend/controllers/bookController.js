@@ -64,12 +64,12 @@ export const createBook = async (req, res) => {
 export const createBooks = async (req, res) => {
   let books = req.body;
 
-  // make sure it's always an array
+  //to  make sure it's always an array
   if (!Array.isArray(books)) {
     books = [books];
   }
 
-  // check each book
+  // check each book if all required fields are given
   for (let i = 0; i < books.length; i++) {
     const book = books[i];
     if (!book.title || !book.author || !book.year_published) {
@@ -80,17 +80,19 @@ export const createBooks = async (req, res) => {
     }
   }
 
+  //if validation and book fields are passed
+  //store it to db
   try {
     const results = [];
     
-    // Just use the same pattern as your working single create
+    //store each book to results 1 by 1
     for (const book of books) {
       const result = await sql`
         INSERT INTO books (title, author, year_published, img)
         VALUES (${book.title}, ${book.author}, ${book.year_published}, ${book.img})
         RETURNING *
       `;
-      results.push(...result); // spread the result array
+      results.push(...result); 
     }
 
     return res.status(201).json({
