@@ -16,8 +16,10 @@ const Navbar = () => {
   return (
     <>
       <div
-        className={`shadow-md w-screen py-4 flex px-8 items-center justify-between
-     md:px-15 lg:px-20 ${theme === "winter" ? "bg-blue-50" : "bg-[#1a1a28]"}`}
+        className={`shadow-md w-screen py- flex px-5 items-center justify-between
+     sm:px-7 md:px-14 lg:px-14 xl:px-36 ${
+       theme === "winter" ? "bg-blue-50" : "bg-[#1a1a28]"
+     }`}
       >
         <Link to={"/"}>
           <div className="flex gap-2 items-center">

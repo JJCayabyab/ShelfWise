@@ -1,10 +1,14 @@
-import React from 'react'
-import axios from 'axios'
+import React from "react";
+import axios from "axios";
 
 const BookPage = () => {
   return (
-    <div>BookPage</div>
-  )
-}
+    <>
+      <div
+        className=" "
+      ></div>
+    </>
+  );
+};
 
-export default BookPage
+export default BookPage;

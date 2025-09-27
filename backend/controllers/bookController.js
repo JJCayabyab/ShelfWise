@@ -61,6 +61,54 @@ export const createBook = async (req, res) => {
   }
 };
 
+export const createBooks = async (req, res) => {
+  let books = req.body;
+
+  // make sure it's always an array
+  if (!Array.isArray(books)) {
+    books = [books];
+  }
+
+  // check each book
+  for (let i = 0; i < books.length; i++) {
+    const book = books[i];
+    if (!book.title || !book.author || !book.year_published) {
+      return res.status(400).json({
+        success: false,
+        message: `Book at index ${i} is missing required field`,
+      });
+    }
+  }
+
+  try {
+    const results = [];
+    
+    // Just use the same pattern as your working single create
+    for (const book of books) {
+      const result = await sql`
+        INSERT INTO books (title, author, year_published, img)
+        VALUES (${book.title}, ${book.author}, ${book.year_published}, ${book.img})
+        RETURNING *
+      `;
+      results.push(...result); // spread the result array
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: `Successfully created ${results.length} book(s)`,
+      data: results
+    });
+
+  } catch (error) {
+    console.error('Error inserting books:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to create books',
+      error: error.message
+    });
+  }
+};
+
 export const updateBook = async (req, res) => {
   const { id } = req.params;
   const { title, author, year_published, img } = req.body;
