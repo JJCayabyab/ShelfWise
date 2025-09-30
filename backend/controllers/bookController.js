@@ -3,7 +3,7 @@ import { sql } from "../config/db.js";
 export const getAllBooks = async (req, res) => {
   try {
     const books = await sql`SELECT * FROM books
-    ORDER BY created_at DESC`;
+    ORDER BY title ASC `;
 
     res.status(200).json({
       success: true,
@@ -11,7 +11,7 @@ export const getAllBooks = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in fetching books:", error);
-    res.status(500).json({ success: "false", message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
@@ -25,23 +25,23 @@ export const getBook = async (req, res) => {
     if (book.length === 0) {
       return res
         .status(404)
-        .json({ success: "false", message: "Book not found" });
+        .json({ success: false, message: "Book not found" });
     }
 
-    res.status(200).json({ success: "true", data: book[0] });
+    res.status(200).json({ success: true, data: book[0] });
   } catch (error) {
     console.log("Error in fetching a book:", error);
-    res.status(500).json({ success: "false", message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
 export const createBook = async (req, res) => {
   const { title, author, year_published, img, description } = req.body;
 
-  if (!title || !author || !year_published || !description) {
+  if (!title || !author || !year_published || !description ||!img) {
     return res
       .status(400)
-      .json({ success: "false", message: "All fields are required" });
+      .json({ success: false, message: "All fields are required" });
   }
 
   try {
@@ -50,13 +50,15 @@ export const createBook = async (req, res) => {
      VALUES (${title}, ${author}, ${year_published}, ${img}, ${description})
      RETURNING *
      `;
-    res.status(201).json({ success: "true", data: newBook[0] });
+    res.status(201).json({ success: true, data: newBook[0] });
   } catch (error) {
     console.log("Error in creating a book:", error);
-    res.status(500).json({ success: "false", message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
+//for adding multiple data
+//for development purpose only
 export const createBooks = async (req, res) => {
   let books = req.body;
 
@@ -66,7 +68,12 @@ export const createBooks = async (req, res) => {
 
   for (let i = 0; i < books.length; i++) {
     const book = books[i];
-    if (!book.title || !book.author || !book.year_published ||!book.description) {
+    if (
+      !book.title ||
+      !book.author ||
+      !book.year_published ||
+      !book.description
+    ) {
       return res.status(400).json({
         success: false,
         message: `Book at index ${i} is missing required field`,
@@ -105,28 +112,48 @@ export const updateBook = async (req, res) => {
   const { id } = req.params;
   const { title, author, year_published, img, description } = req.body;
 
+  if (!title && !author && !year_published && !img && !description) {
+    return res.status(400).json({
+      success: false,
+      message: "At least one field is required to update",
+    });
+  }
+
   try {
+    const currentBook = await sql`SELECT * FROM books WHERE id = ${id}`;
+
+    if (currentBook.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Book not found",
+      });
+    }
+    // If field is not provided, use the current value
+    const newTitle = title ? title : currentBook[0].title;
+    const newAuthor = author ? author : currentBook[0].author;
+    const newYearPublished = year_published
+      ? year_published
+      : currentBook[0].year_published;
+    const newImg = img ? img : currentBook[0].img;
+    const newDescription = description
+      ? description
+      : currentBook[0].description;
+
     const updatedBook = await sql`
       UPDATE books
-      SET title = ${title},
-          author = ${author},
-          year_published = ${year_published},
-          img = ${img},
-          description = ${description}
+      SET title = ${newTitle},
+          author = ${newAuthor},
+          year_published = ${newYearPublished},
+          img = ${newImg},
+          description = ${newDescription}
       WHERE id = ${id}
       RETURNING *
     `;
 
-    if (updatedBook.length === 0) {
-      return res
-        .status(404)
-        .json({ success: "false", message: "Book not found" });
-    }
-
-    res.status(200).json({ success: "true", data: updatedBook[0] });
+    res.status(200).json({ success: true, data: updatedBook[0] });
   } catch (error) {
     console.log("Error in updating a book:", error);
-    res.status(500).json({ success: "false", message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
@@ -141,16 +168,16 @@ export const deleteBook = async (req, res) => {
 
     if (deleteBook.length === 0) {
       return res.status(404).json({
-        success: "false",
+        success: false,
         message: "Book not found. Failed in deleting book.",
       });
     }
 
     res
       .status(200)
-      .json({ success: "true", message: "Book deleted successfully" });
+      .json({ success: true, message: "Book deleted successfully" });
   } catch (error) {
     console.log("Error in deleting a book:", error);
-    res.status(500).json({ success: "false", message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };

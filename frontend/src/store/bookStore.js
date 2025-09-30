@@ -28,6 +28,18 @@ export const useBookStore = create((set, get) => ({
     }
   },
 
+  addBook: async (bookData) => {
+    set({ loading: true });
+    try {
+      const res = await axios.post(`${url}/api/books`, bookData);
+      set({ books: [...get().books, res.data.data] });
+    } catch (error) {
+      console.error("Error adding book:", error);
+      throw error.response?.data?.message || error.message;
+    } finally {
+      set({ loading: false });
+    }
+  },
   deleteBook: async (id) => {
     set({ loading: true });
     try {
