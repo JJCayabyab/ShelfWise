@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import axios from "axios";
-import toast from "react-hot-toast";
 
 // const url = "https://shelfwise-1.onrender.com";
 const url = "http://localhost:5001";
@@ -36,10 +35,10 @@ export const useBookStore = create((set, get) => ({
       set({
         books: get().books.filter((book) => book.id !== id),
       });
-      toast.success("Book deleted succesfully")
+      return true;
     } catch (error) {
-      console.log("Error deleting the book");
-      toast.error(error);
+      console.error("Error deleting the book:", error);
+      throw error.message;
     } finally {
       set({ loading: false });
     }

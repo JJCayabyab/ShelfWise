@@ -20,8 +20,7 @@ export const getBook = async (req, res) => {
 
   try {
     const book = await sql`SELECT * FROM books 
-    WHERE id = ${id}
-    `;
+    WHERE id = ${id}`;
 
     if (book.length === 0) {
       return res
@@ -34,14 +33,12 @@ export const getBook = async (req, res) => {
     console.log("Error in fetching a book:", error);
     res.status(500).json({ success: "false", message: "Server Error" });
   }
-
-  res.send("Update a book by ID");
 };
 
 export const createBook = async (req, res) => {
-  const { title, author, year_published, img } = req.body;
+  const { title, author, year_published, img, description } = req.body;
 
-  if (!title || !author || !year_published) {
+  if (!title || !author || !year_published || !description) {
     return res
       .status(400)
       .json({ success: "false", message: "All fields are required" });
@@ -49,11 +46,10 @@ export const createBook = async (req, res) => {
 
   try {
     const newBook = await sql`
-     INSERT INTO books(title, author, year_published,img) 
-     VALUES (${title}, ${author}, ${year_published}, ${img})
+     INSERT INTO books(title, author, year_published, img, description) 
+     VALUES (${title}, ${author}, ${year_published}, ${img}, ${description})
      RETURNING *
      `;
-    console.log(newBook);
     res.status(201).json({ success: "true", data: newBook[0] });
   } catch (error) {
     console.log("Error in creating a book:", error);
@@ -64,15 +60,13 @@ export const createBook = async (req, res) => {
 export const createBooks = async (req, res) => {
   let books = req.body;
 
-  //to  make sure it's always an array
   if (!Array.isArray(books)) {
     books = [books];
   }
 
-  // check each book if all required fields are given
   for (let i = 0; i < books.length; i++) {
     const book = books[i];
-    if (!book.title || !book.author || !book.year_published) {
+    if (!book.title || !book.author || !book.year_published ||!book.description) {
       return res.status(400).json({
         success: false,
         message: `Book at index ${i} is missing required field`,
@@ -80,45 +74,45 @@ export const createBooks = async (req, res) => {
     }
   }
 
-  //if validation and book fields are passed
-  //store it to db
   try {
     const results = [];
-    
-    //store each book to results 1 by 1
+
     for (const book of books) {
       const result = await sql`
-        INSERT INTO books (title, author, year_published, img)
-        VALUES (${book.title}, ${book.author}, ${book.year_published}, ${book.img})
+        INSERT INTO books (title, author, year_published, img, description)
+        VALUES (${book.title}, ${book.author}, ${book.year_published}, ${book.img}, ${book.description})
         RETURNING *
       `;
-      results.push(...result); 
+      results.push(...result);
     }
 
     return res.status(201).json({
       success: true,
       message: `Successfully created ${results.length} book(s)`,
-      data: results
+      data: results,
     });
-
   } catch (error) {
-    console.error('Error inserting books:', error);
+    console.error("Error inserting books:", error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to create books',
-      error: error.message
+      message: "Failed to create books",
+      error: error.message,
     });
   }
 };
 
 export const updateBook = async (req, res) => {
   const { id } = req.params;
-  const { title, author, year_published, img } = req.body;
+  const { title, author, year_published, img, description } = req.body;
 
   try {
     const updatedBook = await sql`
       UPDATE books
-      SET title = ${title},author = ${author},year_published = ${year_published},img = ${img}
+      SET title = ${title},
+          author = ${author},
+          year_published = ${year_published},
+          img = ${img},
+          description = ${description}
       WHERE id = ${id}
       RETURNING *
     `;
