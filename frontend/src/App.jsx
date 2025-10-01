@@ -11,9 +11,9 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/book/:id" element={<BookPage  />} />
+        <Route path="/book/:id" element={<BookPage />} />
       </Routes>
-            <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }
