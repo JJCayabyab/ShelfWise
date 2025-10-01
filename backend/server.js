@@ -6,22 +6,33 @@ import dotenv from "dotenv";
 import bookRoutes from "./routes/bookRoutes.js";
 import { sql } from "./config/db.js";
 import rateLimit from "express-rate-limit";
-dotenv.config(); 
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT;
 
 app.use(express.json()); // to parse json body
 app.use(helmet()); // Security middleware
 app.use(morgan("dev")); // log the request
-app.use(cors()); // to allow cross-origin requests
 
+
+const allowedOrigins = [
+  "http://localhost:5173", // for local dev
+  "https://shelf-wise-qtin.vercel.app", // your deployed frontend
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 
 app.set("trust proxy", 1);
 // basic rate limiter
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, 
+  max: 200,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -32,7 +43,6 @@ const limiter = rateLimit({
 
 app.use(limiter); // apply limiter to all routes
 app.use("/api/books", bookRoutes);
-
 
 app.get("/", (req, res) => {
   res.send("📚 ShelfWise Backend is running 🚀");
