@@ -9,7 +9,7 @@ import rateLimit from "express-rate-limit";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5001;
 
 app.use(express.json()); // to parse json body
 app.use(helmet()); // Security middleware
@@ -18,7 +18,7 @@ app.use(morgan("dev")); // log the request
 
 const allowedOrigins = [
   "http://localhost:5173", // for local dev
-  "https://shelf-wise-qtin.vercel.app", // your deployed frontend
+  "https://shelf-wise-qtin.vercel.app", //   frontend link
 ];
 
 app.use(
@@ -28,7 +28,7 @@ app.use(
   })
 );
 
-app.set("trust proxy", 1);
+app.set("trust proxy", 1);//for render
 // basic rate limiter
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes

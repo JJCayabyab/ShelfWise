@@ -1,9 +1,10 @@
 import { create } from "zustand";
 import axios from "axios";
 
+// const url = "https://shelfwise-1.onrender.com";
 const url = "https://shelfwise-1.onrender.com";
-// const url = "http://localhost:5001";
 
+console.log(url);
 export const useBookStore = create((set, get) => ({
   books: [],
   loading: false,

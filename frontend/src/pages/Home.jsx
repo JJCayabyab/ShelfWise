@@ -12,6 +12,7 @@ const Home = () => {
     fetchBooks();
   }, [fetchBooks]);
 
+
   if (loading) {
     return (
       <div role="status" className="flex justify-center mt-20">
