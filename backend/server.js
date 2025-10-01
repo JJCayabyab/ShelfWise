@@ -33,6 +33,10 @@ const limiter = rateLimit({
 app.use(limiter); // apply limiter to all routes
 app.use("/api/books", bookRoutes);
 
+
+app.get("/", (req, res) => {
+  res.send("📚 ShelfWise Backend is running 🚀");
+});
 async function startServer() {
   try {
     await sql`
