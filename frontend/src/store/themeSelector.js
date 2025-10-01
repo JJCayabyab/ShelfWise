@@ -6,7 +6,7 @@ export const useThemeStore = create((set) => ({
     set((state) => {
       const newTheme = state.theme === "winter" ? "sunset" : "winter";
       console.log(`Theme: ${newTheme}`);
-      // update html data-theme>
+    
       document.documentElement.setAttribute("data-theme", newTheme);
       
       return { theme: newTheme };

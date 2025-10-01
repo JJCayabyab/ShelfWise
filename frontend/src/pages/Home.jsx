@@ -16,7 +16,6 @@ const Home = () => {
   if (loading) {
     return (
       <div role="status" className="flex justify-center mt-20">
-   
       </div>
     );
   }
