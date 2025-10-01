@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useBookStore } from "../store/bookStore";
 import toast from "react-hot-toast";
 
-const BookFormModal = ({ isOpen, onClose, mode }) => {
-  const { addBook } = useBookStore();
+const BookFormModal = ({ isOpen, onClose, mode, book }) => {
+  const { addBook, updateBook } = useBookStore();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -14,23 +14,62 @@ const BookFormModal = ({ isOpen, onClose, mode }) => {
     description: "",
   });
 
+  //this takes effect if the mode is update
+  //formData will have values at this point
+  useEffect(() => {
+    if (mode === "update") {
+      setFormData({
+        title: book.title,
+        author: book.author,
+        year_published: book.year_published,
+        img: book.img,
+        description: book.description,
+      });
+    }
+  },[mode,book]);
+
+  //handle submit of add and update function depending on mode(add or update)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await addBook(formData);
-      toast.success("Book added!");
-      onClose();
-      setFormData({
-        title: "",
-        author: "",
-        year_published: null,
-        img: "",
-        description: "",
-      });
-    } catch (err) {
-      toast.error(
-        "Failed to add book: " + (err.response?.data?.message || err.message)
-      );
+
+    //for add function
+    if (mode === "add") {
+      try {
+        await addBook(formData);
+        toast.success("Book added!");
+        onClose();
+        setFormData({
+          title: "",
+          author: "",
+          year_published: null,
+          img: "",
+          description: "",
+        });
+      } catch (err) {
+        toast.error(
+          "Failed to add book: " + (err.response?.data?.message || err.message)
+        );
+      }
+    }
+    //for update function
+    else if (mode === "update") {
+      try {
+        await updateBook(book.id, formData);
+        toast.success("Book updated!");
+        onClose();
+        setFormData({
+          title: "",
+          author: "",
+          year_published: null,
+          img: "",
+          description: "",
+        });
+      } catch (err) {
+        toast.error(
+          "Failed to update book: " +
+            (err.response?.data?.message || err.message)
+        );
+      }
     }
   };
 

@@ -6,7 +6,7 @@ import { useState } from "react";
 const BookCard = ({ book, theme, deleteBook }) => {
   const [isOpen, setIsOpen] = useState(false);
   const mode = "update";
-  
+
   const confirmDelete = (book, deleteBook) => {
     toast(
       (t) => (
@@ -76,9 +76,11 @@ const BookCard = ({ book, theme, deleteBook }) => {
           </div>
 
           <div className="flex gap-3 mt-3 justify-end">
-            <Link to={`/books/${book.id}`}>
-              <EditIcon className="w-5 h-5 text-green-600 hover:text-green-800 cursor-pointer transition" />
-            </Link>
+            <EditIcon
+              onClick={() => setIsOpen(true)}
+              className="w-5 h-5 text-green-600 hover:text-green-800 cursor-pointer transition"
+            />
+
             <DeleteIcon
               onClick={() => confirmDelete(book, deleteBook)}
               className="w-5 h-5 text-red-600 hover:text-red-800 cursor-pointer transition"
@@ -87,6 +89,7 @@ const BookCard = ({ book, theme, deleteBook }) => {
         </div>
       </div>
       <BookFormModal
+        book={book}
         isOpen={isOpen}
         mode={mode}
         onClose={() => setIsOpen(false)}

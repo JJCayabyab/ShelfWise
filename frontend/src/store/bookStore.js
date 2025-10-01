@@ -1,9 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-// const url = "https://shelfwise-1.onrender.com";
-const url = "http://localhost:5001";
-// const url = "http:192.168.0.104:5001"
+const url = "https://shelfwise-1.onrender.com";
 
 export const useBookStore = create((set, get) => ({
   books: [],
@@ -32,6 +30,8 @@ export const useBookStore = create((set, get) => ({
     set({ loading: true });
     try {
       const res = await axios.post(`${url}/api/books`, bookData);
+
+      // add the new book to books
       set({ books: [...get().books, res.data.data] });
     } catch (error) {
       console.error("Error adding book:", error);
@@ -40,6 +40,26 @@ export const useBookStore = create((set, get) => ({
       set({ loading: false });
     }
   },
+
+  updateBook: async (id, bookData) => {
+    set({ loading: true });
+    try {
+      const res = await axios.patch(`${url}/api/books/${id}`, bookData);
+
+      // Update the specific book in the store
+      set({
+        books: get().books.map((book) =>
+          book.id === id ? res.data.data : book
+        ),
+      });
+    } catch (error) {
+      console.error("Error updating a book:", error);
+      throw error.response?.data?.message || error.message;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
   deleteBook: async (id) => {
     set({ loading: true });
     try {
