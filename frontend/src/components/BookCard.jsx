@@ -19,7 +19,7 @@ const BookCard = ({ book, theme, deleteBook }) => {
                 try {
                   await deleteBook(book.id);
                   toast.dismiss(t.id);
-                  toast.success(`${book.title} deleted`);
+                  toast.success(`${book.title} deleted`, { duration: 4000 });
                 } catch (err) {
                   toast.dismiss(t.id);
                   toast.error(`Failed to delete ${book.title}: ${err}`);
