@@ -1,11 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { EditIcon, DeleteIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import BookFormModal from "./BookFormModal";
 import { useState } from "react";
+
 const BookCard = ({ book, theme, deleteBook }) => {
   const [isOpen, setIsOpen] = useState(false);
   const mode = "update";
+  const navigate = useNavigate();
 
   const confirmDelete = (book, deleteBook) => {
     toast(
@@ -44,7 +46,8 @@ const BookCard = ({ book, theme, deleteBook }) => {
   return (
     <>
       <div
-        className={`flex h-full min-h-[200px] rounded-2xl bg-base-100 ${
+        onClick={() => navigate(`/book/${book.id}`)}
+        className={`flex h-50 rounded-2xl bg-base-100 cursor-pointer ${
           theme === "winter"
             ? "shadow-[0_0_15px_rgba(0,0,0,0.2)]"
             : "shadow-[0_0_15px_rgba(0,0,0,0.5)]"
@@ -55,7 +58,7 @@ const BookCard = ({ book, theme, deleteBook }) => {
           <img
             src={book.img}
             alt={book.title}
-            className="h-full rounded-bl-2xl rounded-tl-2xl"
+            className="w-full h-full rounded-bl-2xl rounded-tl-2xl object-cover"
           />
         </div>
 
@@ -75,19 +78,27 @@ const BookCard = ({ book, theme, deleteBook }) => {
             </p>
           </div>
 
+          {/* Action buttons */}
           <div className="flex gap-3 mt-3 justify-end">
             <EditIcon
-              onClick={() => setIsOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation(); 
+                setIsOpen(true);
+              }}
               className="w-5 h-5 text-green-600 hover:text-green-800 cursor-pointer transition"
             />
 
             <DeleteIcon
-              onClick={() => confirmDelete(book, deleteBook)}
+              onClick={(e) => {
+                e.stopPropagation();
+                confirmDelete(book, deleteBook);
+              }}
               className="w-5 h-5 text-red-600 hover:text-red-800 cursor-pointer transition"
             />
           </div>
         </div>
       </div>
+
       <BookFormModal
         book={book}
         isOpen={isOpen}

@@ -15,11 +15,18 @@ const Home = () => {
   if (loading) {
     return (
       <div role="status" className="flex justify-center mt-20">
-        {/* spinner */}
+        {/* spinner component here */}
       </div>
     );
   }
-  if (error) return <p>Error: {error}</p>;
+
+  if (error) {
+    return (
+      <div className="flex justify-center mt-20 text-red-500">
+        Error: {error}
+      </div>
+    );
+  }
 
   const filteredBooks = books.filter((book) =>
     book.title.toLowerCase().includes(search.toLowerCase())

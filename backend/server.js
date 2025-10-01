@@ -6,20 +6,22 @@ import dotenv from "dotenv";
 import bookRoutes from "./routes/bookRoutes.js";
 import { sql } from "./config/db.js";
 import rateLimit from "express-rate-limit";
-dotenv.config(); // Load environment variables from .env file
+dotenv.config(); 
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ;
 
 app.use(express.json()); // to parse json body
 app.use(helmet()); // Security middleware
 app.use(morgan("dev")); // log the request
 app.use(cors()); // to allow cross-origin requests
 
+
+app.set("trust proxy", 1);
 // basic rate limiter
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 150, 
+  max: 200, 
   standardHeaders: true,
   legacyHeaders: false,
   message: {
