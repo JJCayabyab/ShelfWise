@@ -13,4 +13,4 @@ A full-stack **Book Catalog App** built with:
 - REST API integration
 
 ## 🌐 Live Demo
-[Visit the app here](shelf-wise-qtin.vercel.app/)
+[Visit the app here](https://shelf-wise-qtin.vercel.app/)
