@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-
-const url = "https://shelfwise-1.onrender.com";
+const url = import.meta.env.VITE_API_URL;
 
 console.log(url);
 export const useBookStore = create((set, get) => ({
