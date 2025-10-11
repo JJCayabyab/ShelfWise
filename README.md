@@ -14,3 +14,6 @@ A full-stack **Book Catalog App** built with:
 
 ## 🌐 Live Demo
 [Visit the app here](https://shelf-wise-qtin.vercel.app/)
+
+## 🎥 Video Demo
+[Watch the demo here](https://www.youtube.com/watch?v=zfiM-NWVar4)
